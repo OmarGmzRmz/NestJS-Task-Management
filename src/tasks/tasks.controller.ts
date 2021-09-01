@@ -1,7 +1,8 @@
 import { Body, Controller, Delete, Get, Param, Patch, Post, Query } from '@nestjs/common';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { GetTasksFilterDto } from './dto/get-tasks-filter.dto';
-import { TaskStatus } from './task.model';
+import { UpdateTaskStatusDto } from './dto/update-task-status.dto';
+import { ToLowerCase } from './pipes/lower-case.pipe';
 import { TasksService } from './tasks.service';
 
 @Controller('tasks') // This will handle requests to http://localhost:3000/tasks
@@ -33,7 +34,19 @@ export class TasksController {
     }
 
     @Patch('/:id/status')
-    async updateTaskStatus(@Param('id') id: string, @Body('status') status: TaskStatus) {
+    async updateTaskStatus(
+        @Param('id') id: string, 
+        //@Body('status') status: TaskStatus // Get property status from body object
+        @Body() updateTaskStatusDto: UpdateTaskStatusDto
+    ) {
+        const {status} = updateTaskStatusDto;
         return await this.tasksService.updateTaskStatus(id, status);
     } 
+
+    @Post('/testCustomPipe')
+    async testCustomPipe(
+        @Body('description', ToLowerCase) description: string
+    ) {
+        return description;
+    }
 }
