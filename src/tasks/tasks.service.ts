@@ -3,9 +3,16 @@ import { CreateTaskDto } from './dto/create-task.dto';
 import { Task, TaskStatus } from './task.entity';
 import { v4 as uuid } from 'uuid';
 import { GetTasksFilterDto } from './dto/get-tasks-filter.dto';
+import { TasksRepository } from './task.repository';
+import { InjectRepository } from '@nestjs/typeorm';
 
 @Injectable()
 export class TasksService {
+    constructor(
+        @InjectRepository(TasksRepository)
+        private tasksRepository: TasksRepository
+    ) {}
+
     private tasks: Array<Task> = [
         {
             id: uuid(),
@@ -32,7 +39,7 @@ export class TasksService {
     }
 
     async createTask(createTaskDto: CreateTaskDto): Promise<Task> {
-        const id = uuid();
+        /* const id = uuid();
         const newTask: Task = {
             id: id.toString(),
             title: createTaskDto.title,
@@ -40,7 +47,8 @@ export class TasksService {
             status: TaskStatus.OPEN
         };
         this.tasks.push(newTask);
-        return newTask;
+        return newTask; */
+        return this.tasksRepository.createTask(createTaskDto);
     }
 
     async getTaskById(taskId : string): Promise<Task> {
