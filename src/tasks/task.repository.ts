@@ -14,7 +14,7 @@ export class TasksRepository extends Repository<Task> {
         }
         if (search) {
             query.andWhere(
-                'LOWER(task.title) LIKE :search OR LOWER(task.descriptipn) LIKE :search',
+                'LOWER(task.title) LIKE LOWER(:search) OR LOWER(task.descriptipn) LIKE LOWER(:search):search',
                 { search: `%${search.toLowerCase()}%` }
             )
         }
@@ -25,8 +25,8 @@ export class TasksRepository extends Repository<Task> {
     async createTask(createTaskDto: CreateTaskDto): Promise<Task> {
         const {title, description} = createTaskDto;
         const task = this.create({
-            title ,
-            description ,
+            title,
+            description,
             status: TaskStatus.OPEN
         });
         await this.save(task);

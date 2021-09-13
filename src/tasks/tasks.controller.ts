@@ -10,12 +10,13 @@ export class TasksController {
     constructor(private tasksService: TasksService) {}
 
     @Get()
-    async getAllTasks(@Query() filterDto: GetTasksFilterDto) {
-        if (Object.keys(filterDto).length) {
+    async getTasks(@Query() filterDto: GetTasksFilterDto) {
+        /* if (Object.keys(filterDto).length) {
             return await this.tasksService.getTaskWithFilters(filterDto);
         } else {
             return await this.tasksService.getAllTasks();
-        }
+        } */
+        return this.tasksService.getTasks(filterDto);
     }
 
     @Get('/:id') 

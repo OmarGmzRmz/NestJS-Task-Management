@@ -38,6 +38,10 @@ export class TasksService {
         return tasks;
     }
 
+    async getTasks(filterDto: GetTasksFilterDto): Promise<Task[]> {
+        return this.tasksRepository.getTasks(filterDto);
+    }
+
     async createTask(createTaskDto: CreateTaskDto): Promise<Task> {
         /* const id = uuid();
         const newTask: Task = {
@@ -76,7 +80,6 @@ export class TasksService {
         task.status = status;
         return task;
     }
-
 
     private getNewId(): number {
         return this.tasks.length + 1;
