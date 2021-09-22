@@ -65,7 +65,7 @@ export class TasksService {
             
         } */
 
-        const found =   this.tasksRepository.findOne(taskId);
+        const found =  this.tasksRepository.findOne(taskId);
         if (!found) {
             throw new NotFoundException(`Task with id ${taskId} not found`);
         }
