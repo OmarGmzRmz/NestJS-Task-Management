@@ -11,16 +11,14 @@ constructor(
     ) {}
 
     @Post('/signup')
-    signUp(@Body(LoggerPipe) authCredentialsDto: AuthCredentialsDto): Promise<User> {
-        console.log('AuthCreedentials', authCredentialsDto);
+    signUp(@Body() authCredentialsDto: AuthCredentialsDto): Promise<User> {
         return this.authservice.signUp(authCredentialsDto);
-        //return Promise.resolve();
     }
 
-    /* @Post('/signin')
+    @Post('/signin')
     signIn(
         @Body() authCredentialsDto: AuthCredentialsDto
     ): Promise<{ accessToken: string }> {
         return this.authservice.signIn(authCredentialsDto);
-    } */
+    }
 }
