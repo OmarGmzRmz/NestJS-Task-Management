@@ -5,6 +5,7 @@ import { AuthCredentialsDto } from "./dto/auth-credentials.dto";
 import { User } from "./model/user.entity";
 import { UsersRepository } from "./users.repository";
 import * as bcrypt from 'bcrypt';
+import { JwtPayload } from "./interfaces/jwt-payload.interface";
 
 @Injectable()
 export class AuthService {
@@ -23,7 +24,7 @@ export class AuthService {
         const user = await this.usersRepository.findOne({username});
         const canSignIn = user ? await bcrypt.compare(password, user.password): false;
         if (canSignIn) {
-            const payload = { username }; // Custom payload
+            const payload: JwtPayload = { username }; // Custom payload
             const accessToken: string = this.jwtService.sign(payload);
             return { accessToken };
         } else {

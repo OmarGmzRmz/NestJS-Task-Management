@@ -1,4 +1,5 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, Query } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Query, UseGuards } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { GetTasksFilterDto } from './dto/get-tasks-filter.dto';
 import { UpdateTaskStatusDto } from './dto/update-task-status.dto';
@@ -6,8 +7,14 @@ import { ToLowerCase } from './pipes/lower-case.pipe';
 import { TasksService } from './tasks.service';
 
 @Controller('tasks') // This will handle requests to http://localhost:3000/tasks
+@UseGuards(AuthGuard())
 export class TasksController {
     constructor(private tasksService: TasksService) {}
+    
+    @Post()
+    async createTask(@Body() createTaskDto: CreateTaskDto ){
+        return await this.tasksService.createTask(createTaskDto);
+    }
 
     @Get()
     async getTasks(@Query() filterDto: GetTasksFilterDto) {
@@ -24,10 +31,6 @@ export class TasksController {
         return await this.tasksService.getTaskById(id);
     }
 
-    @Post()
-    async createTask(@Body() createTaskDto: CreateTaskDto ){
-        return await this.tasksService.createTask(createTaskDto);
-    }
 
     @Delete('/:id')
     async deleteTaskById(@Param('id') id: string) {
