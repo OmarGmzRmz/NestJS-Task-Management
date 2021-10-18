@@ -1,3 +1,4 @@
+import { InternalServerErrorException, Logger } from "@nestjs/common";
 import { User } from "src/auth/model/user.entity";
 import { EntityRepository, Repository } from "typeorm";
 import { CreateTaskDto } from "./dto/create-task.dto";
@@ -6,6 +7,7 @@ import { Task, TaskStatus } from "./model/task.entity";
 
 @EntityRepository(Task)
 export class TasksRepository extends Repository<Task> {
+    private logger = new Logger();
 
     async getTasks(filterDto: GetTasksFilterDto, user: User): Promise<Task[]> {
         const { status, search } = filterDto;
@@ -20,8 +22,14 @@ export class TasksRepository extends Repository<Task> {
                 { search: `%${search.toLowerCase()}%` }
             )
         }
-        const tasks = await query.getMany();
-        return tasks;
+        try {
+            const tasks = await query.getMany();
+            return tasks;
+        } catch (error) {
+            const msg = `Failed to get task for user "${user.username}". Filters: ${JSON.stringify(filterDto)}`;
+            this.logger.error(msg, error.stack);
+            throw new InternalServerErrorException(msg);
+        }
     }
 
     async createTask(createTaskDto: CreateTaskDto, user: User): Promise<Task> {
