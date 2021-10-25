@@ -21,6 +21,7 @@ export class AuthService {
     }
 
     async signIn(authCredentialsDto: AuthCredentialsDto): Promise<{ accessToken: string}> {
+        this.logger.verbose('Signing in user');
         const { username, password } = authCredentialsDto;
         const user = await this.usersRepository.findOne({username});
         if (!user) {
